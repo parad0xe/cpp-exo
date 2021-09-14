@@ -35,6 +35,8 @@ int array_search(int* array, int value) {
 }
 
 int main() {
+	srand((unsigned) time(0));
+	
 	int array_size = 10;
 	int array[array_size];
 

@@ -85,25 +85,78 @@ void merge_sort(int* array, int array_size, int order = 1) {
 	}
 }
 
-void squareup(int* array) {
-	for(int i = 0; *(array + i); i++)
-		array[i] = pow(array[i], 2);
+void debug(const char* title, int a) {
+	std::cout << title << " " << a << std::endl;
+}
+
+void nl() {
+	std::cout << std::endl;
+}
+
+int min_impossible_value(int* array, int array_size) {
+	int last_max_index = 0;
+
+	for(int i = 0; i < array[array_size - 1]; i++)
+	{
+		int current_value = i + 1;
+
+		int index;
+		if((index = array_search(array, current_value)) != -1) {
+			last_max_index = index;
+			continue;
+		}
+
+		if(i > 0) {
+			bool in = false;
+			int last_max = last_max_index;
+
+			for(int j = i; j >= 0; j--)
+			{
+				current_value = current_value - array[last_max];
+
+				int s_i = array_search(array, current_value);
+				if(s_i != -1 && s_i < last_max) {
+					in = true;
+					break;
+				}
+
+				do
+				{
+					last_max--;
+				} while (last_max >= 0 && array[last_max] >= current_value);
+
+				if(last_max < 0) break;
+			}
+
+			if(!in) return i + 1;
+		}
+	}
+
+	return -1;
 }
 
 int main() {
-	srand((unsigned) time(0));
-	
-	int array_size = 10;
-	int array[array_size];
-
-	random_array(array, array_size, 100);
+	int array_size = 3;
+	int array[array_size] = {1, 2, 5, '\0'};
 	print_array(array);
 
 	merge_sort(array, array_size);
 	print_array(array);
 
-	squareup(array);
+	int min = min_impossible_value(array, array_size);
+	std::cout << "Impossible: " << min << std::endl;
+
+	std::cout << std::endl;
+
+	int array_size2 = 7;
+	int array2[array_size2] = {5, 7, 1, 1, 2, 3, 22, '\0'};
 	print_array(array);
+
+	merge_sort(array2, array_size2);
+	print_array(array2);
+
+	int min2 = min_impossible_value(array2, array_size2);
+	std::cout << "Impossible: " << min2 << std::endl;
 
 	return 0;
 }
